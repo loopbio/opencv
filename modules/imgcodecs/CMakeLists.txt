@@ -19,7 +19,15 @@ if(HAVE_PNG OR HAVE_TIFF OR HAVE_OPENEXR)
 endif()
 
 if(HAVE_JPEG)
-  ocv_include_directories(${JPEG_INCLUDE_DIR})
+
+  #
+  # This includes the dirs after the system, giving jpeg9 headers priority
+  # See cmake/OpenCVUtils.cmake for the definition of ocv_include_directories
+  #   ocv_include_directories(${JPEG_INCLUDE_DIR})
+  # So instead we force it to have higher priority than system include
+  #
+  include_directories(BEFORE SYSTEM ${JPEG_INCLUDE_DIR})
+
   list(APPEND GRFMT_LIBS ${JPEG_LIBRARIES})
 endif()
 
