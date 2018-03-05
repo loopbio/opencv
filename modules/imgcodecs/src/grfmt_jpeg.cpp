@@ -72,7 +72,7 @@ typedef unsigned char boolean;
 #undef TRUE
 
 extern "C" {
-#include "jpeglib.h"
+#include "turbojpeglib.h"
 }
 
 namespace cv
