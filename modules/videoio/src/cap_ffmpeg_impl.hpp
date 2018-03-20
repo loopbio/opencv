@@ -291,6 +291,9 @@ inline double get_monotonic_time_diff_ms(timespec time1, timespec time2)
 
 static int get_number_of_cpus(void)
 {
+    char* thread_count = getenv("OPENCV_FFMPEG_THREAD_COUNT");
+    if(thread_count != NULL)
+        return std::stoi(thread_count);
 #if LIBAVFORMAT_BUILD < CALC_FFMPEG_VERSION(52, 111, 0)
     return 1;
 #elif defined _WIN32
@@ -1114,6 +1117,8 @@ double CvCapture_FFMPEG::getProperty( int property_id ) const
         return _opencv_ffmpeg_get_sample_aspect_ratio(ic->streams[video_stream]).num;
     case CV_FFMPEG_CAP_PROP_SAR_DEN:
         return _opencv_ffmpeg_get_sample_aspect_ratio(ic->streams[video_stream]).den;
+    case CV_FFMPEG_CAP_PROP_THREAD_COUNT:
+        return video_st->codec->thread_count;
     default:
         break;
     }
