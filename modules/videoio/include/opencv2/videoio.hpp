@@ -170,6 +170,7 @@ enum VideoCaptureProperties {
        CAP_PROP_SAR_NUM       =40, //!< Sample aspect ratio: num/den (num)
        CAP_PROP_SAR_DEN       =41, //!< Sample aspect ratio: num/den (den)
        CAP_PROP_THREAD_COUNT = 5555,
+       CAP_PROP_THREAD_TYPE = 5556,
 #ifndef CV_DOXYGEN
        CV__CAP_PROP_LATEST
 #endif

@@ -289,6 +289,16 @@ inline double get_monotonic_time_diff_ms(timespec time1, timespec time2)
 }
 #endif // USE_AV_INTERRUPT_CALLBACK
 
+static int get_threading_type(void)
+{
+     // Frame: 1, Slice=2, Auto=Frame+Slice (or whatever the codec support, I guess, auto is default if not specified)
+     // https://github.com/FFmpeg/FFmpeg/blob/5985a1bf72332e10d251ec643e100b5592285819/libavcodec/avcodec.h#L2774-L2784
+    char* thread_type = getenv("OPENCV_FFMPEG_THREAD_TYPE");
+    if(thread_type != NULL)
+        return std::stoi(thread_type);
+    return -1;
+}
+
 static int get_number_of_cpus(void)
 {
     char* thread_count = getenv("OPENCV_FFMPEG_THREAD_COUNT");
@@ -883,6 +893,8 @@ bool CvCapture_FFMPEG::open( const char* _filename )
 //        avcodec_thread_init(enc, get_number_of_cpus());
 //#else
         enc->thread_count = get_number_of_cpus();
+        if(get_threading_type() >= 0)
+            enc->thread_type = get_threading_type();
 //#endif
 
 #if LIBAVFORMAT_BUILD < CALC_FFMPEG_VERSION(53, 2, 0)
@@ -1146,6 +1158,8 @@ double CvCapture_FFMPEG::getProperty( int property_id ) const
         return _opencv_ffmpeg_get_sample_aspect_ratio(ic->streams[video_stream]).den;
     case CV_FFMPEG_CAP_PROP_THREAD_COUNT:
         return video_st->codec->thread_count;
+    case CV_FFMPEG_CAP_PROP_THREAD_TYPE:
+        return video_st->codec->thread_type;
     default:
         break;
     }
